@@ -27,6 +27,9 @@ defmodule MuttkraftWeb.Router do
     resources "/sessions", SessionController,
       only: [:new, :create, :delete],
       singleton: true
+    resources "/villages", VillageController
+    resources "/buildings", BuildingController
+    
     resources "/users", UserController do
       get "/become", UserController, :become
     end

@@ -1,0 +1,30 @@
+<h1>Listing Building</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+      <th>Row</th>
+      <th>Column</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for building <- @building do %>
+    <tr>
+      <td><%= building.type %></td>
+      <td><%= building.row %></td>
+      <td><%= building.column %></td>
+
+      <td>
+        <span><%= link "Show", to: Routes.building_path(@conn, :show, building) %></span>
+        <span><%= link "Edit", to: Routes.building_path(@conn, :edit, building) %></span>
+        <span><%= link "Delete", to: Routes.building_path(@conn, :delete, building), method: :delete, data: [confirm: "Are you sure?"] %></span>
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+
+<span><%= link "New Building", to: Routes.building_path(@conn, :new) %></span>

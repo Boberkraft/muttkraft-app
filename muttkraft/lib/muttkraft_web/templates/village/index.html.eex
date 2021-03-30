@@ -1,0 +1,26 @@
+<h1>Listing Villages</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for village <- @villages do %>
+    <tr>
+      <td><%= village.name %></td>
+
+      <td>
+        <span><%= link "Show", to: Routes.village_path(@conn, :show, village) %></span>
+        <span><%= link "Edit", to: Routes.village_path(@conn, :edit, village) %></span>
+        <span><%= link "Delete", to: Routes.village_path(@conn, :delete, village), method: :delete, data: [confirm: "Are you sure?"] %></span>
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+
+<span><%= link "New Village", to: Routes.village_path(@conn, :new) %></span>

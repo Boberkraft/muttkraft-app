@@ -1,0 +1,13 @@
+<h1>Show Village</h1>
+
+<ul>
+
+  <li>
+    <strong>Name:</strong>
+    <%= @village.name %>
+  </li>
+
+</ul>
+
+<span><%= link "Edit", to: Routes.village_path(@conn, :edit, @village) %></span>
+<span><%= link "Back", to: Routes.village_path(@conn, :index) %></span>

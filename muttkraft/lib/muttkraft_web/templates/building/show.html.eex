@@ -1,0 +1,23 @@
+<h1>Show Building</h1>
+
+<ul>
+
+  <li>
+    <strong>Type:</strong>
+    <%= @building.type %>
+  </li>
+
+  <li>
+    <strong>Row:</strong>
+    <%= @building.row %>
+  </li>
+
+  <li>
+    <strong>Column:</strong>
+    <%= @building.column %>
+  </li>
+
+</ul>
+
+<span><%= link "Edit", to: Routes.building_path(@conn, :edit, @building) %></span>
+<span><%= link "Back", to: Routes.building_path(@conn, :index) %></span>
