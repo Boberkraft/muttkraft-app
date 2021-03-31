@@ -9,9 +9,10 @@ defmodule MuttkraftWeb.BuildingController do
     render(conn, "index.html", building: building)
   end
 
-  def new(conn, _params) do
-    changeset = Structures.change_building(%Building{})
-    render(conn, "new.html", changeset: changeset)
+  def new(conn, %{"village_id" => village_id, "row" => row, "column" => column}) do
+    village = Muttkraft.Map.get_village!(village_id)
+    changeset = Structures.change_building(%Building{row: row, column: column})
+    render(conn, "new.html", village: village, changeset: changeset)
   end
 
   def create(conn, %{"building" => building_params}) do
@@ -19,10 +20,11 @@ defmodule MuttkraftWeb.BuildingController do
       {:ok, building} ->
         conn
         |> put_flash(:info, "Building created successfully.")
-        |> redirect(to: Routes.building_path(conn, :show, building))
+        |> redirect(to: Routes.village_path(conn, :show, building.village_id))
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        render(conn, "new.html", changeset: changeset)
+        village = Muttkraft.Map.get_village!(building_params["village_id"])
+        render(conn, "new.html", village: village, changeset: changeset)
     end
   end
 

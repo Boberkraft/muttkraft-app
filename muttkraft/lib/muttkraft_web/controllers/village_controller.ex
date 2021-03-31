@@ -27,7 +27,7 @@ defmodule MuttkraftWeb.VillageController do
   end
 
   def show(conn, %{"id" => id}) do
-    village = Map.get_village!(id)
+    village = Map.get_village_with_buildings!(id)
     render(conn, "show.html", village: village)
   end
 

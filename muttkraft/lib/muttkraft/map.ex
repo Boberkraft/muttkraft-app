@@ -37,8 +37,13 @@ defmodule Muttkraft.Map do
   """
   def get_village!(id), do: Repo.get!(Village, id)
 
+
+  def get_village_with_buildings!(id) do
+    Repo.get(Village |> preload(:buildings), id)
+  end
   @doc """
   Creates a village.
+
 
   ## Examples
 

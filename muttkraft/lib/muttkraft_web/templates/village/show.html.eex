@@ -3,10 +3,76 @@
 <ul>
 
   <li>
-    <strong>Name:</strong>
-    <%= @village.name %>
+      <strong>Name:</strong>
+      <%= @village.name %>
   </li>
 
+  <style>
+      #resource-field-wrapper {
+      display: inline-block;
+      border-image: url(<%= Routes.static_path(@conn, "/images/sidebarBox.png") %>) 38 53 38 53 fill stretch;
+      border-style: solid;
+      border-width: 38px 53px 38px 53px;
+      }
+      #resource-field {
+      position: relative;
+      width: <%= 5 * 120  %>px;
+      height: <%= 5 * 60  %>px;
+      }
+      #resource-field .slot {
+      background-image: url(<%= Routes.static_path(@conn, "/images/circle.png") %>);
+      position: absolute;
+      display: grid;
+      width: 23px;
+      height: 23px;
+      }
+
+
+      #resource-field .building {
+      width: 120px;
+      height: 120px;
+
+      }
+      
+      #resource-field .sawmill {
+      background-image: url(<%= Routes.static_path(@conn, "/images/sawmill.png") %>);
+      }
+
+      #resource-field .shooting_range {
+      background-image: url(<%= Routes.static_path(@conn, "/images/shooting_range.png") %>);
+      }
+
+      #resource-field .town_hall {
+      background-image: url(<%= Routes.static_path(@conn, "/images/town_hall.png") %>);
+      }
+
+
+
+      <%= for row <- 0..4 do %>
+          <%= for column <- 0..4 do %>
+              <% offset = if Integer.is_odd(row) do 30 else -30 end %>
+              #resource-field .slot-<%= row*5 + column %> {
+              top: <%= row * 60 + 60/2 - 23/2%>px;
+              left: <%= column * 120 + 120/2 - 23/2 + offset%>px;
+              }
+
+              #resource-field .building-<%= row*5 + column %> {
+              top: <%= row * 60 - 50%>px;
+              left: <%= column * 120 + offset%>px;
+              }
+   <% end %>
+   <% end %>
+  </style>
+
+  <div id="resource-field-wrapper">
+      <div id="resource-field">
+          <%= for row <- 0..4 do %>
+              <%= for column <- 0..4 do %>
+                  <%= render_field(@conn, village: @village, row: row, column: column) %>
+              <% end %>
+          <% end %>
+      </div>
+  </div>
 </ul>
 
 <span><%= link "Edit", to: Routes.village_path(@conn, :edit, @village) %></span>

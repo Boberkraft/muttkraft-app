@@ -1,5 +1,5 @@
 <h1>New Building</h1>
 
-<%= render "form.html", Map.put(assigns, :action, Routes.building_path(@conn, :create)) %>
+<%= render "form.html", Map.put(assigns, :action, Routes.village_building_path(@conn, :create, @village.id)) %>
 
-<span><%= link "Back", to: Routes.building_path(@conn, :index) %></span>
+<span><%= link "Back", to: Routes.village_path(@conn, :show, @village.id) %></span>

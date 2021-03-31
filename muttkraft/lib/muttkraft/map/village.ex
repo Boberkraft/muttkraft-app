@@ -6,6 +6,8 @@ defmodule Muttkraft.Map.Village do
     field :name, :string
     belongs_to :user, Accounts.User
 
+    has_many :buildings, Muttkraft.Structures.Building
+
     timestamps()
   end
 

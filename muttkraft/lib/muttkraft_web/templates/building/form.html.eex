@@ -1,21 +1,25 @@
 <%= form_for @changeset, @action, fn f -> %>
   <%= if @changeset.action do %>
     <div class="alert alert-danger">
-      <p>Oops, something went wrong! Please check the errors below.</p>
+        <p>Oops, something went wrong! Please check the errors below.</p>
     </div>
   <% end %>
 
   <%= label f, :type %>
-  <%= text_input f, :type %>
+  <%= select f, :type, ["Townhall": "town_hall",
+  "Shooting Range": "shooting_range", "Sawmill": "sawmill"] %>
   <%= error_tag f, :type %>
 
-  <%= label f, :row %>
-  <%= number_input f, :row %>
+  <%= hidden_input f, :village_id, value: @village.id%>
+  <%= error_tag f, :village_id %>
+
+  <%= hidden_input f, :row %>
   <%= error_tag f, :row %>
 
-  <%= label f, :column %>
-  <%= number_input f, :column %>
+
+  <%= hidden_input f, :column %>
   <%= error_tag f, :column %>
+
 
   <div>
     <%= submit "Save" %>
