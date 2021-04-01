@@ -55,9 +55,12 @@ defmodule Muttkraft.Map do
 
   """
   def create_village(attrs \\ %{}) do
+    empty_pile = Resources.create_empty_pile()
+
     %Village{}
     |> Village.changeset(attrs)
     |> Repo.insert()
+    |> Map.put(:resource_pile_id, empty_pile.id)
   end
 
   @doc """

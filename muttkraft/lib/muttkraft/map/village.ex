@@ -6,6 +6,7 @@ defmodule Muttkraft.Map.Village do
     field :name, :string
     belongs_to :user, Accounts.User
 
+    belongs_to :resource_pile, Muttkraft.Resources.Pile
     has_many :buildings, Muttkraft.Structures.Building
 
     timestamps()
@@ -14,7 +15,8 @@ defmodule Muttkraft.Map.Village do
   @doc false
   def changeset(village, attrs) do
     village
-    |> cast(attrs, [:name])
-    |> validate_required([:name])
+    |> cast(attrs, [:name, :reso])
+    |> validate_required([:name, :resource_pile_id])
+    |> cast_assoc(:resource_pile)
   end
 end

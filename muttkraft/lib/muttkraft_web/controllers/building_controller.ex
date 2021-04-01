@@ -28,18 +28,19 @@ defmodule MuttkraftWeb.BuildingController do
     end
   end
 
-  def show(conn, %{"id" => id}) do
+  def show(conn, %{"village_id" => village_id, "id" => id}) do
+    village = Muttkraft.Map.get_village!(village_id)
     building = Structures.get_building!(id)
-    render(conn, "show.html", building: building)
+    render(conn, "show.html", village: village, building: building)
   end
 
-  def edit(conn, %{"id" => id}) do
+  def edit(conn, %{"village_id" => village_id, "id" => id}) do
     building = Structures.get_building!(id)
     changeset = Structures.change_building(building)
     render(conn, "edit.html", building: building, changeset: changeset)
   end
 
-  def update(conn, %{"id" => id, "building" => building_params}) do
+  def update(conn, %{"village_id" => village_id, "id" => id, "building" => building_params}) do
     building = Structures.get_building!(id)
 
     case Structures.update_building(building, building_params) do

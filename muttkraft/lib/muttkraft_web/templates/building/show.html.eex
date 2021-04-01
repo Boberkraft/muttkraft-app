@@ -19,5 +19,5 @@
 
 </ul>
 
-<span><%= link "Edit", to: Routes.building_path(@conn, :edit, @building) %></span>
-<span><%= link "Back", to: Routes.building_path(@conn, :index) %></span>
+<span><%= link "Edit", to: Routes.village_building_path(@conn, :edit, @village, @building) %></span>
+<span><%= link "Back", to: Routes.village_path(@conn, :show, @village) %></span>

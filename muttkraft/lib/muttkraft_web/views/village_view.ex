@@ -10,10 +10,10 @@ defmodule MuttkraftWeb.VillageView do
     end)
 
     case potential_building do
-      nil -> link "", to: Routes.village_building_path(conn, :new, village.id, row, column),
+      nil -> link "", to: Routes.village_building_path(conn, :new, village, row, column),
                       class: "slot slot-#{row*5+column}"
       building ->
-          link "", to: Routes.village_building_path(conn, :new, village.id, row, column),
+          link "", to: Routes.village_building_path(conn, :show, village, building),
                        class: "slot building-#{row*5+column} building #{building.type}"
     end
   end
