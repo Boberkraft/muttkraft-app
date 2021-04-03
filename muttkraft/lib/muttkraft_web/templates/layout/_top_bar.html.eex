@@ -1,0 +1,5 @@
+<div id="navigation-resources">
+    <%= for resource_name <- MuttkraftWeb.ResourceView.list_resources do %>
+        <%= render "_resource.html", conn: @conn, resource_name: resource_name, resource_pile: @resource_pile %>
+    <% end %>
+</div>

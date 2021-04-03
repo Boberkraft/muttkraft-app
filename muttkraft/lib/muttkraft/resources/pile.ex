@@ -3,12 +3,12 @@ defmodule Muttkraft.Resources.Pile do
   import Ecto.Changeset
 
   schema "resource_piles" do
-    field :blood, :integer
-    field :crystal, :integer
-    field :ore, :integer
-    field :gems, :integer
-    field :gold, :integer
-    field :wood, :integer
+    field :blood, :integer, null: false
+    field :crystal, :integer, null: false
+    field :ore, :integer, null: false
+    field :gems, :integer, null: false
+    field :gold, :integer, null: false
+    field :wood, :integer, null: false
 
     timestamps()
   end

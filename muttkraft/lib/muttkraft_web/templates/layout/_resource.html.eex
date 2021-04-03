@@ -1,0 +1,11 @@
+<span class="resource">
+    <div class="image">
+        <img align="middle" src="<%= Routes.static_path(@conn, "/images/resources/#{MuttkraftWeb.ResourceView.resource_image_filename(@resource_name)}") %>">
+    </div>
+    <div class="numbers">
+        <%= MuttkraftWeb.ResourceView.get_resource(@resource_name, @resource_pile) %>
+    </div>
+    <div class="back-bar">
+        <div class="inner-bar" style="background-color: #b1d443; width: <%= div MuttkraftWeb.ResourceView.get_resource(@resource_name, @resource_pile), 7 %>%"></div>
+    </div>
+</span>

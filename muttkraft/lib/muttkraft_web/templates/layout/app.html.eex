@@ -9,6 +9,58 @@
         <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
 
         <script defer type="text/javascript" src="<%= Routes.static_path(@conn, "/js/app.js") %>"></script>
+        <style>
+         #navigation-resources {
+            # background-image: url(<%= Routes.static_path(@conn, "/images/fabric.png") %>);
+            # background-repeat: repeat;
+         }
+
+         #navigation-resources > .resource {
+             display: inline-grid;
+             grid-template-columns: 1fr 1fr;
+
+             height: 2.7em;
+             padding: 0.2em;
+             background-color: white; 
+             border: 2px solid #e7e7e7;
+            # border-top-color: white;
+            # border-bottom-color: #b7b7b7;
+
+         }
+         #navigation-resources > .resource > .image {
+            grid-row-start: 1;
+            grid-row-end: span 3;
+            justify-self: center;
+             height: 26px;
+             width: 37px;
+         }
+
+         #navigation-resources > .resource > .image > img {
+             max-height: 26px;
+             max-width: 37px;
+         }
+
+
+         #navigation-resources > .resource > numbers {
+             min-width: 4em;
+             color: green;
+         }
+         
+
+         #navigation-resources > .resource > .back-bar {
+             margin-left: 5px;
+             margin-right: 5px;
+
+             border: 1px solid black;
+             background-color: black;
+             height: 6px;
+         }
+
+         .back-bar > .inner-bar {
+             height: 100%;
+         }
+
+        </style>
     </head>
     <body>
         <header>
@@ -21,13 +73,17 @@
                         <% else %>
                             <li><%= link "Login", to: Routes.session_path(@conn, :new) %></li>
                         <% end %>
-                        
+
                         <%= if function_exported?(Routes, :live_dashboard_path, 2) do %>
                             <li><%= link "LiveDashboard", to: Routes.live_dashboard_path(@conn, :home) %></li>
                         <% end %>
+
+
+                        <%= if Map.has_key?(@conn.assigns, :resource_pile) do %>
+                            <%= render "_top_bar.html", conn: @conn, village: @village, resource_pile: @resource_pile %>
+                        <% end %>
                     </ul>
                 </nav>
-                
             </section>
         </header>
         <main role="main" class="container">
