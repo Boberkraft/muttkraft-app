@@ -1,0 +1,138 @@
+
+<style>
+
+ #unit-queue {
+     display: flex;
+     align-items: stretch;
+     
+ }
+
+ #unit-queue img {
+     transform: scaleX(-1);
+ }
+
+ #unit-queue button {
+     height: 1.7rem;
+     line-height: 1.7rem;
+     background-color: darkred;
+     margin: 0.2rem;
+     border-color: darkred;
+     padding-right: 0.5rem;
+     padding-left: 0.5rem;
+ }
+
+ #unit-queue button.first-item {
+     align-self: center;
+ }
+
+ #unit-queue .bottom-unit-preview.first {
+     display: grid;
+     align-items: center;
+     grid-template-columns: 2fr 1fr;
+
+ }
+
+ #unit-queue .bottom-unit-preview  {
+     display: grid;
+     align-items: center;
+     grid-template-columns: 1fr  1fr 1fr;
+ }
+
+
+ #unit-queue .outer-progress {
+
+     border: 1px solid black;
+     border-radius: 5px;
+     background-color: black;
+     height: 6px;
+ }
+
+ #unit-queue .inner-progress {
+     background-color: #b1d443;
+     border-radius: 5px;
+     height: 100%;
+ }
+
+ #unit-buy {
+     display: flex;
+     align-items: stretch;
+ }
+
+ .unit-preview {
+     display: flex;
+     flex-direction: column;
+ }
+
+ .unit-preview .button {
+     height: 1.7rem;
+     line-height: 1.7rem;
+     align-self: center;
+ }
+
+ .unit-img-wrapper {
+     width: 90px;
+     height: 95px;
+
+     display: flex;
+     justify-content: center;
+     align-items: flex-end;
+     
+ }
+
+ .unit-img-wrapper img {
+     image-rendering: pixelated;
+     margin-bottom: 5px;
+ }
+
+</style>
+
+<h2>Train</h2>
+<div id="unit-buy">
+    <%= for name <- ["goblin", "orc", "ogre",  "peasant", "pikerman", "halfling", "boar", "hydra"] do %>
+        <div class="unit-preview">
+            <div class="unit-img-wrapper">
+                <img src="<%= Routes.static_path(@conn, "/images/units/#{name}.png") %>"/>
+            </div>
+
+            <%= link to: Routes.village_path(@conn, :show, 2), class: "button #{if name == "hydra.png" || name == "boar.png", do: "disabled"}" do %>
+                +1
+            <% end %>
+            
+       </div>
+    <% end %>
+</div>
+
+<h2>Queue</h2>
+<div id="unit-queue">
+    <%= for [name, progress] <- [["goblin.png", true], ["goblin.png", false]] do %>
+        <div class="unit-preview">
+            <div class="unit-img-wrapper">
+                <img src="<%= Routes.static_path(@conn, "/images/units/#{name}") %>"/>
+            </div>
+
+            <div class="bottom-unit-preview <%= if progress, do: "first" %>">
+                <%= if progress do %>
+                    <div class="outer-progress">
+                        <div class="inner-progress" style="width: 76%"></div>
+                    </div>
+                <% else %>
+                    <div></div>
+                <% end %>
+                <button class="<%= if progress, do: "first-item" %>">X</button>
+            </div>
+            
+        </div>
+    <% end %>
+</div>
+
+<h2>Your current units</h2>
+<div>
+
+    <%= for _ <- 1..5 do %>
+        <img src="<%= Routes.static_path(@conn, "/images/units/goblin_mini.png") %>"/>
+    <% end %>
+    <img src="<%= Routes.static_path(@conn, "/images/units/orc_mini.png") %>"/>
+    
+    
+</div>
+    

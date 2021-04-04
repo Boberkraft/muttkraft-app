@@ -28,6 +28,7 @@ defmodule MuttkraftWeb.VillageController do
 
   def show(conn, %{"id" => id}) do
     village = Map.get_village_for_rendering!(id)
+    Muttkraft.ResourceCalculator.recalculate_village_resources(id)
     resource_pile = village.resource_pile
     render(conn, "show.html", resource_pile: resource_pile, village: village)
   end

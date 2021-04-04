@@ -1,11 +1,5 @@
-<h1>Show Village</h1>
+<h1>Village <strong><%= @village.name %></strong></h1>
 
-<ul>
-
-  <li>
-      <strong>Name:</strong>
-      <%= @village.name %>
-  </li>
 
   <style>
       #resource-field-wrapper {
@@ -30,6 +24,7 @@
       #resoruce-field .empty-slot img {
       width: 23px;
       height: 23px;
+          text-align: center;
       }
 
       #resource-field .slot img {
@@ -56,6 +51,8 @@
    <% end %>
    <% end %>
   </style>
+<ul>
+
 
   <div id="resource-field-wrapper">
       <div id="resource-field">

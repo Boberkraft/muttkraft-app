@@ -19,4 +19,10 @@ defmodule Muttkraft.Resources.Pile do
     |> cast(attrs, [:gold, :wood, :ore, :crystal, :gems, :blood])
     |> validate_required([:gold, :wood, :ore, :crystal, :gems, :blood])
   end
+
+  def fetch(pile, key) do
+    pile
+    |> Map.from_struct()
+    |> Map.fetch(key)
+  end
 end

@@ -4,6 +4,7 @@ defmodule Muttkraft.Map.Village do
 
   schema "villages" do
     field :name, :string
+    field :last_collected_at, :utc_datetime
     belongs_to :user, Accounts.User
 
     belongs_to :resource_pile, Muttkraft.Resources.Pile
@@ -15,8 +16,8 @@ defmodule Muttkraft.Map.Village do
   @doc false
   def changeset(village, attrs) do
     village
-    |> cast(attrs, [:name, :reso])
-    |> validate_required([:name, :resource_pile_id])
+    |> cast(attrs, [:name, :last_collected_at])
+    |> validate_required([:name, :last_collected_at, :resource_pile_id])
     |> cast_assoc(:resource_pile)
   end
 end

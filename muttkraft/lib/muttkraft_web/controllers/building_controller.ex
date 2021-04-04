@@ -54,12 +54,13 @@ defmodule MuttkraftWeb.BuildingController do
     end
   end
 
-  def delete(conn, %{"id" => id}) do
+  def delete(conn, %{"village_id" => village_id, "id" => id}) do
+    village = Muttkraft.Map.get_village!(village_id)
     building = Structures.get_building!(id)
     {:ok, _building} = Structures.delete_building(building)
 
     conn
     |> put_flash(:info, "Building deleted successfully.")
-    |> redirect(to: Routes.building_path(conn, :index))
+    |> redirect(to: Routes.village_path(conn, :show, village))
   end
 end

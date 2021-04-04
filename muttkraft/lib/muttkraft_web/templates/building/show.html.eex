@@ -1,23 +1,22 @@
-<h1>Show Building</h1>
+<h1><%= @building.type %></h1>
 
-<ul>
+<%= if @building.type == :shooting_range do %>
+  <%= render "_recruit.html", conn: @conn, resource_pile: @village.resource_pile %>
+   <% else %>
+    <ul>
+        <li>
+            <strong>Row:</strong>
+            <%= @building.row %>
+        </li>
 
-  <li>
-    <strong>Type:</strong>
-    <%= @building.type %>
-  </li>
+        <li>
+            <strong>Column:</strong>
+            <%= @building.column %>
+        </li>
 
-  <li>
-    <strong>Row:</strong>
-    <%= @building.row %>
-  </li>
+    </ul>
+<% end %>
 
-  <li>
-    <strong>Column:</strong>
-    <%= @building.column %>
-  </li>
-
-</ul>
-
+<span><%= link "Delete", to: Routes.village_building_path(@conn, :delete, @village, @building), method: :delete, data: [confirm: "Are you sure?"] %></span>
 <span><%= link "Edit", to: Routes.village_building_path(@conn, :edit, @village, @building) %></span>
 <span><%= link "Back", to: Routes.village_path(@conn, :show, @village) %></span>

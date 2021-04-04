@@ -6,6 +6,6 @@
         <%= MuttkraftWeb.ResourceView.get_resource(@resource_name, @resource_pile) %>
     </div>
     <div class="back-bar">
-        <div class="inner-bar" style="background-color: #b1d443; width: <%= div MuttkraftWeb.ResourceView.get_resource(@resource_name, @resource_pile), 7 %>%"></div>
+        <div class="inner-bar" style="background-color: #b1d443; width: <%= div(MuttkraftWeb.ResourceView.get_resource(@resource_name, @resource_pile), 1000) * 100 %>%"></div>
     </div>
 </span>
