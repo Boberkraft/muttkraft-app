@@ -5,7 +5,7 @@ defmodule Muttkraft.Structures.Building do
   schema "building" do
     field :column, :integer
     field :row, :integer
-    field :type, Ecto.Enum, values: [:town_hall, :sawmill, :shooting_range]
+    field :type, Ecto.Enum, values: Enum.map(MuttkraftWeb.BuildingView.list_building_types, &(String.to_atom(&1)))
 
     belongs_to :village, Muttkraft.Village
     timestamps()

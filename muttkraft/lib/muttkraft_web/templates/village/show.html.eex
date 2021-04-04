@@ -17,48 +17,41 @@
       #resource-field {
       position: relative;
       width: <%= 5 * 120  %>px;
-      height: <%= 5 * 60  %>px;
+      height: <%= 5 * 120  %>px;
+      
       }
       #resource-field .slot {
-      background-image: url(<%= Routes.static_path(@conn, "/images/circle.png") %>);
       position: absolute;
-      display: grid;
+      width: 120px;
+      text-align: center;
+      height: 120px;
+      }
+
+      #resoruce-field .empty-slot img {
       width: 23px;
       height: 23px;
       }
 
-
-      #resource-field .building {
-      width: 120px;
-      height: 120px;
-
-      }
-      
-      #resource-field .sawmill {
-      background-image: url(<%= Routes.static_path(@conn, "/images/sawmill.png") %>);
-      }
-
-      #resource-field .shooting_range {
-      background-image: url(<%= Routes.static_path(@conn, "/images/shooting_range.png") %>);
-      }
-
-      #resource-field .town_hall {
-      background-image: url(<%= Routes.static_path(@conn, "/images/town_hall.png") %>);
+      #resource-field .slot img {
+      position: relative;
+      top: 50%;
+      transform: translateY(-50%);
       }
 
 
+      <%= MuttkraftWeb.LayoutView.buildings_css(@conn) %>
 
       <%= for row <- 0..4 do %>
           <%= for column <- 0..4 do %>
               <% offset = if Integer.is_odd(row) do 30 else -30 end %>
               #resource-field .slot-<%= row*5 + column %> {
-              top: <%= row * 60 + 60/2 - 23/2%>px;
-              left: <%= column * 120 + 120/2 - 23/2 + offset%>px;
+              top: <%= row * 120 %>px;
+              left: <%= column * 120%>px;
               }
 
               #resource-field .building-<%= row*5 + column %> {
-              top: <%= row * 60 - 50%>px;
-              left: <%= column * 120 + offset%>px;
+              top: <%= row * 120 %>px;
+              left: <%= column * 120 %>px;
               }
    <% end %>
    <% end %>

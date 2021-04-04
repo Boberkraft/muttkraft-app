@@ -7,7 +7,7 @@
 
   <%= label f, :type %>
   <%= select f, :type, ["Townhall": "town_hall",
-  "Shooting Range": "shooting_range", "Sawmill": "sawmill"] %>
+  "Shooting Range": "shooting_range", "Sawmill": "sawmill", "Ore Pit": "ore_pit", "Gold mine": "gold_mine"] %>
   <%= error_tag f, :type %>
 
   <%= hidden_input f, :village_id, value: @village.id%>

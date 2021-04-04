@@ -23,8 +23,7 @@
              padding: 0.2em;
              background-color: white; 
              border: 2px solid #e7e7e7;
-            # border-top-color: white;
-            # border-bottom-color: #b7b7b7;
+             border-radius: 5px;
 
          }
          #navigation-resources > .resource > .image {
@@ -52,12 +51,18 @@
              margin-right: 5px;
 
              border: 1px solid black;
+             border-radius: 5px;
              background-color: black;
              height: 6px;
          }
 
          .back-bar > .inner-bar {
+             border-radius: 5px;
              height: 100%;
+         }
+
+         nav[role=navigation] ul li {
+             display: inline-block;
          }
 
         </style>
@@ -66,22 +71,26 @@
         <header>
             <section class="container">
                 <nav role="navigation">
+
+                    <%= if Map.has_key?(@conn.assigns, :resource_pile) do %>
+                        <%= render "_top_bar.html", conn: @conn, village: @village, resource_pile: @resource_pile %>
+                    <% end %>
+
                     <ul>
+                        
+
+                     
                         <%= if Map.has_key?(@conn.assigns, :current_user) do %>
-                            Hello <%= @conn.assigns.current_user.name %>
-                            <li><%= link "Log out", to: Routes.session_path(@conn, :delete), method: :delete %></li>
+                            Hello <%= @conn.assigns.current_user.name %> | 
+                            <li><%= link "Log out", to: Routes.session_path(@conn, :delete), method: :delete %></li> |
                         <% else %>
-                            <li><%= link "Login", to: Routes.session_path(@conn, :new) %></li>
+                            <li><%= link "Login", to: Routes.session_path(@conn, :new) %></li> |
                         <% end %>
 
                         <%= if function_exported?(Routes, :live_dashboard_path, 2) do %>
                             <li><%= link "LiveDashboard", to: Routes.live_dashboard_path(@conn, :home) %></li>
                         <% end %>
 
-
-                        <%= if Map.has_key?(@conn.assigns, :resource_pile) do %>
-                            <%= render "_top_bar.html", conn: @conn, village: @village, resource_pile: @resource_pile %>
-                        <% end %>
                     </ul>
                 </nav>
             </section>
