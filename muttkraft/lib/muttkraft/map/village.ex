@@ -9,7 +9,7 @@ defmodule Muttkraft.Map.Village do
 
     belongs_to :resource_pile, Muttkraft.Resources.Pile
     has_many :buildings, Muttkraft.Structures.Building
-
+    has_many :units, Muttkraft.Army.Unit
     timestamps()
   end
 
