@@ -1,0 +1,13 @@
+<h1>Show Unit</h1>
+
+<ul>
+
+  <li>
+    <strong>Type:</strong>
+    <%= @unit.type %>
+  </li>
+
+</ul>
+
+<span><%= link "Edit", to: Routes.unit_path(@conn, :edit, @unit) %></span>
+<span><%= link "Back", to: Routes.unit_path(@conn, :index) %></span>

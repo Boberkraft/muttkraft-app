@@ -1,0 +1,26 @@
+<h1>Listing Units</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Type</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+<%= for unit <- @units do %>
+    <tr>
+      <td><%= unit.type %></td>
+
+      <td>
+        <span><%= link "Show", to: Routes.unit_path(@conn, :show, unit) %></span>
+        <span><%= link "Edit", to: Routes.unit_path(@conn, :edit, unit) %></span>
+        <span><%= link "Delete", to: Routes.unit_path(@conn, :delete, unit), method: :delete, data: [confirm: "Are you sure?"] %></span>
+      </td>
+    </tr>
+<% end %>
+  </tbody>
+</table>
+
+<span><%= link "New Unit", to: Routes.unit_path(@conn, :new) %></span>
