@@ -18,24 +18,24 @@ defmodule MuttkraftWeb.UnitController do
     village = Muttkraft.Map.get_village!(village_id)
     # Serializable Isolation Level
 
-    Muttkraft.Repo.transaction fn ->
-      Muttkraft.Repo.transaction.query!("set transaction isolation level serializable")
+    Muttkraft.Repo.transaction(fn ->
+      Muttkraft.Repo.query!("set transaction isolation level serializable")
 
-      queued_units_count =  Repo.aggregate(Muttkraft.Army.get_queued_units_in_village(village_id), :count, :id)
+      queued_units_count = Muttkraft.Repo.aggregate(Muttkraft.Army.get_queued_units_in_village(village_id), :count, :id)
       if queued_units_count > 7 do
         conn
         |> put_flash(:info, "To many units in queue")
         |> redirect(to: Routes.village_path(conn, :show, village_id))
       end
 
-      created_units_count = Repo.aggregate(Muttkraft.Army.get_units_in_village(village_id))
+      created_units_count = Muttkraft.Repo.aggregate(Muttkraft.Army.get_units_in_village(village_id), :count, :id)
       if created_units_count > 20 do
         conn
         |> put_flash(:info, "You cant have more units")
         |> redirect(to: Routes.village_path(conn, :show, village_id))
       end
 
-      resources = Repo.preload(village, :resource_pile)
+      resources = Muttkraft.Repo.preload(village, :resource_pile).resource_pile
 
       costs = case type do
                 "goblin" -> %{gold: 50, wood: 100}
@@ -48,32 +48,49 @@ defmodule MuttkraftWeb.UnitController do
                 "hydra" -> %{gold: 1000, blood: 300}
               end
 
-      new_resource_pile = Enum.reduce(costs, %{pile: resource_pile, change_set: %{}, errors: []}, fn ({resource_name, resource_cost}, store)
-      current = store[resource_name]
-      new = current - resource_cost
+      resource_pile_computation = Enum.reduce(costs, %{pile: resources, changeset: %{}, errors: []}, fn ({resource_name, resource_cost}, store) ->
+        current = store.pile[resource_name]
+        new = current - resource_cost
 
-      errors = cond do
-        new < 0 -> ["Not enought #{resource_name}" | store[:errors]]
-        new > 1000 -> ["To much resources?" | store[:errors]]
-        _ -> store[:errors]
-      end
+        new_errors = cond do
+          new < 0 -> ["Not enought #{resource_name}" | store[:errors]]
+          new > 1000 -> ["To much resources?" | store[:errors]]
+          true -> store[:errors]
+        end
 
-      changeset = if length(errors) == 0 do
-        
-      end
+        new_changeset = Map.put(store[:changeset], resource_name, new)
+
+        store
+        |> Map.put(:changeset, new_changeset)
+        |> Map.put(:new_errors, new_errors)
       end)
 
-      create_unit_in_queue(%{type: type})
 
-      conn
-      |> put_flash(:info, "#{type} created!")
-      |> redirect(to: Routes.village_path(conn, :show, village_id))
+      if length(resource_pile_computation.errors) > 0 do
+        conn
+        |> put_flash(:info, "You dont have enough resources!")
+        |> redirect(to: Routes.village_path(conn, :show, village_id))
+      end
 
-    end
+      {:ok, _pile } = Muttkraft.Resources.update_pile(resources, resource_pile_computation[:changeset])
+      {:ok, created_unit}  = Army.create_unit_in_queue(%{type: type, village_id: village_id})
+
+     
+    end)
+
+    conn
+    |> put_flash(:info, "created!")
+    |> redirect(to: Routes.village_path(conn, :show, village_id))
   end
 
-  def delete_from_queue(conn, %{"village_id" => _village_id, "id" => id}) do
+  def delete_from_queue(conn, %{"village_id" => village_id, "id" => id}) do
+    unit = Army.get_queued_unit!(id)
 
+    {:ok, _unit} = Army.delete_unit(unit)
+
+    conn
+    |> put_flash(:info, "Queued unit deleted.")
+    |> redirect(to: Routes.village_path(conn, :show, village_id))
   end
 
   def create(conn, %{"unit" => unit_params}) do
@@ -102,11 +119,11 @@ defmodule MuttkraftWeb.UnitController do
   # def update(conn, %{"id" => id, "unit" => unit_params}) do
   #   unit = Army.get_unit!(id)
 
-    #   case Army.update_unit(unit, unit_params) do
+  #   case Army.update_unit(unit, unit_params) do
   #     {:ok, unit} ->
   #       conn
   #       |> put_flash(:info, "Unit updated successfully.")
-    #       |> redirect(to: Routes.unit_path(conn, :show, unit))
+  #       |> redirect(to: Routes.unit_path(conn, :show, unit))
 
   #     {:error, %Ecto.Changeset{} = changeset} ->
   #       render(conn, "edit.html", unit: unit, changeset: changeset)

@@ -32,7 +32,7 @@ defmodule MuttkraftWeb.Router do
       get "buildings/:row/:column", BuildingController, :new
       resources "/buildings", BuildingController, except: [:new]
 
-      post "/units/queue/:type/", UnitController, :new_in_queue
+      post "/units/queue/:type/", UnitController, :create_in_queue, as: :create_in_queue
       resources "/units", UnitController
     end
 

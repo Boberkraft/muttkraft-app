@@ -13,8 +13,8 @@ defmodule Muttkraft.Army.Unit do
   @doc false
   def changeset(unit, attrs) do
     unit
-    |> cast(attrs, [:type, :boolean])
-    |> validate_required([:type, :boolean])
+    |> cast(attrs, [:type, :in_queue, :village_id])
+    |> validate_required([:type, :in_queue, :village_id])
   end
 end
 
