@@ -94,7 +94,7 @@
                 <img src="<%= Routes.static_path(@conn, "/images/units/#{name}.png") %>"/>
             </div>
 
-            <%= link to: Routes.village_create_in_queue_path(@conn, :create_in_queue, @village.id, name), method: :create_in_queue, class: "button #{if name == "hydra.png" || name == "boar.png", do: "disabled"}" do %>
+            <%= link to: Routes.village_building_create_in_queue_path(@conn, :create_in_queue, @village.id, @building.id, name), method: :create_in_queue, class: "button #{if name == "hydra.png" || name == "boar.png", do: "disabled"}" do %>
                 +1
             <% end %>
             
@@ -104,21 +104,21 @@
 
 <h2>Queue</h2>
 <div id="unit-queue">
-    <%= for [name, progress] <- Muttkraft.Army.get_queued_units_in_village(@village.id) |> Muttkraft.Repo.all do %>
+    <%= for {unit, i} <- Muttkraft.Army.get_queued_units_in_village(@village.id) |> Muttkraft.Repo.all |> Enum.with_index do %>
         <div class="unit-preview">
             <div class="unit-img-wrapper">
-                <img src="<%= Routes.static_path(@conn, "/images/units/#{name}") %>"/>
+                <img src="<%= Routes.static_path(@conn, "/images/units/#{unit.type}.png") %>"/>
             </div>
 
-            <div class="bottom-unit-preview <%= if progress, do: "first" %>">
-                <%= if progress do %>
+            <div class="bottom-unit-preview <%= if i == 0, do: "first" %>">
+                <%= if i == 0 do %>
                     <div class="outer-progress">
                         <div class="inner-progress" style="width: 76%"></div>
                     </div>
                 <% else %>
                     <div></div>
                 <% end %>
-                <button class="<%= if progress, do: "first-item" %>">X</button>
+                <button class="<%= if i == 0, do: "first-item" %>">X</button>
             </div>
             
         </div>
@@ -132,7 +132,6 @@
         <img src="<%= Routes.static_path(@conn, "/images/units/goblin_mini.png") %>"/>
     <% end %>
     <img src="<%= Routes.static_path(@conn, "/images/units/orc_mini.png") %>"/>
-    
-    
+
 </div>
     

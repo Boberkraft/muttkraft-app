@@ -30,9 +30,9 @@ defmodule MuttkraftWeb.Router do
 
     resources "/villages", VillageController do
       get "buildings/:row/:column", BuildingController, :new
-      resources "/buildings", BuildingController, except: [:new]
-
-      post "/units/queue/:type/", UnitController, :create_in_queue, as: :create_in_queue
+      resources "/buildings", BuildingController, except: [:new] do
+        post "/units/:building_id/queue/:type/", UnitController, :create_in_queue, as: :create_in_queue
+      end
       resources "/units", UnitController
     end
 

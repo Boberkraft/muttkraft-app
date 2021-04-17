@@ -1,7 +1,7 @@
 <h1><%= @building.type %></h1>
 
 <%= if @building.type == :shooting_range do %>
-  <%= render "_recruit.html", conn: @conn, village: @village, resource_pile: @village.resource_pile %>
+  <%= render "_recruit.html", conn: @conn, village: @village, building: @building, resource_pile: @village.resource_pile %>
    <% else %>
     <ul>
         <li>

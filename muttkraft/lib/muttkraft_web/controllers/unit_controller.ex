@@ -14,25 +14,34 @@ defmodule MuttkraftWeb.UnitController do
     render(conn, "new.html", changeset: changeset)
   end
 
-  def create_in_queue(conn, %{"village_id" => village_id, "type" => type}) do
+  def create_in_queue(conn, %{"village_id" => village_id, "building_id" => building_id, "type" => type}) do
     village = Muttkraft.Map.get_village!(village_id)
     # Serializable Isolation Level
 
+
+
+    {:ok, results} =
     Muttkraft.Repo.transaction(fn ->
       Muttkraft.Repo.query!("set transaction isolation level serializable")
 
+      resources = Muttkraft.Repo.preload(village, :resource_pile).resource_pile
+
+      errors = []
+
       queued_units_count = Muttkraft.Repo.aggregate(Muttkraft.Army.get_queued_units_in_village(village_id), :count, :id)
-      if queued_units_count > 7 do
-        conn
-        |> put_flash(:info, "To many units in queue")
-        |> redirect(to: Routes.village_path(conn, :show, village_id))
+
+      errors = if queued_units_count > 7 do
+        ["To many units in queue" | errors]
+      else
+        errors
       end
 
       created_units_count = Muttkraft.Repo.aggregate(Muttkraft.Army.get_units_in_village(village_id), :count, :id)
-      if created_units_count > 20 do
-        conn
-        |> put_flash(:info, "You cant have more units")
-        |> redirect(to: Routes.village_path(conn, :show, village_id))
+
+      errors =  if created_units_count > 20 do
+        errors = ["You cant have more units" | errors]
+      else
+        errors
       end
 
       resources = Muttkraft.Repo.preload(village, :resource_pile).resource_pile
@@ -48,39 +57,44 @@ defmodule MuttkraftWeb.UnitController do
                 "hydra" -> %{gold: 1000, blood: 300}
               end
 
-      resource_pile_computation = Enum.reduce(costs, %{pile: resources, changeset: %{}, errors: []}, fn ({resource_name, resource_cost}, store) ->
-        current = store.pile[resource_name]
-        new = current - resource_cost
+      resource_pile_computation =
+        Enum.reduce(costs, %{pile: resources, changeset: %{}, errors: errors}, fn ({resource_name, resource_cost}, store) ->
+          current = store.pile[resource_name]
+          new = current - resource_cost
 
-        new_errors = cond do
-          new < 0 -> ["Not enought #{resource_name}" | store[:errors]]
-          new > 1000 -> ["To much resources?" | store[:errors]]
-          true -> store[:errors]
-        end
+          new_errors = cond do
+            new < 0 -> ["Not enought #{resource_name}" | store[:errors]]
+            new > 1000 -> ["To much resources?" | store[:errors]]
+            true -> store[:errors]
+          end
 
-        new_changeset = Map.put(store[:changeset], resource_name, new)
+          new_changeset = Map.put(store[:changeset], resource_name, new)
 
-        store
-        |> Map.put(:changeset, new_changeset)
-        |> Map.put(:new_errors, new_errors)
-      end)
-
+          store
+          |> Map.put(:changeset, new_changeset)
+          |> Map.put(:errors, new_errors)
+        end)
+      
 
       if length(resource_pile_computation.errors) > 0 do
-        conn
-        |> put_flash(:info, "You dont have enough resources!")
-        |> redirect(to: Routes.village_path(conn, :show, village_id))
+        {:error, resource_pile_computation.errors}
+      else
+        {:ok, _pile } = Muttkraft.Resources.update_pile(resources, resource_pile_computation[:changeset])
+        {:ok, created_unit}  = Army.create_unit_in_queue(%{type: type, village_id: village_id})
+        {:ok}
       end
-
-      {:ok, _pile } = Muttkraft.Resources.update_pile(resources, resource_pile_computation[:changeset])
-      {:ok, created_unit}  = Army.create_unit_in_queue(%{type: type, village_id: village_id})
-
-     
     end)
 
-    conn
-    |> put_flash(:info, "created!")
-    |> redirect(to: Routes.village_path(conn, :show, village_id))
+    case results do
+      {:ok} ->
+        conn
+        |> put_flash(:success, "#{type} created!")
+        |> redirect(to: Routes.village_building_path(conn, :show, village_id, building_id))
+      {:error, errors} ->
+        conn
+        |> put_flash(:error, Enum.join(errors, ", "))
+        |> redirect(to: Routes.village_building_path(conn, :show, village_id, building_id))
+    end
   end
 
   def delete_from_queue(conn, %{"village_id" => village_id, "id" => id}) do
