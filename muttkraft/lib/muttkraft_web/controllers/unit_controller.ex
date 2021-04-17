@@ -97,14 +97,14 @@ defmodule MuttkraftWeb.UnitController do
     end
   end
 
-  def delete_from_queue(conn, %{"village_id" => village_id, "id" => id}) do
-    unit = Army.get_queued_unit!(id)
+  def delete_from_queue(conn, %{"village_id" => village_id, "building_id" => building_id, "unit_id" => unit_id}) do
+    unit = Army.get_queued_unit!(unit_id)
 
     {:ok, _unit} = Army.delete_unit(unit)
 
     conn
     |> put_flash(:info, "Queued unit deleted.")
-    |> redirect(to: Routes.village_path(conn, :show, village_id))
+    |> redirect(to: Routes.village_building_path(conn, :show, village_id, building_id))
   end
 
   def create(conn, %{"unit" => unit_params}) do

@@ -11,7 +11,7 @@
      transform: scaleX(-1);
  }
 
- #unit-queue button {
+ #unit-queue .button {
      height: 1.7rem;
      line-height: 1.7rem;
      background-color: darkred;
@@ -118,7 +118,11 @@
                 <% else %>
                     <div></div>
                 <% end %>
-                <button class="<%= if i == 0, do: "first-item" %>">X</button>
+
+                <%= link to: Routes.village_building_delete_from_queue_path(@conn, :delete_from_queue, @village.id, @building.id, unit.id),
+                method: :delete, class: "button #{if i == 0, do: "first-item"}" do %>
+                    X
+                <% end %>
             </div>
             
         </div>
