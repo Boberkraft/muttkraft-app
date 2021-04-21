@@ -18,72 +18,19 @@ defmodule MuttkraftWeb.UnitController do
     village = Muttkraft.Map.get_village!(village_id)
     # Serializable Isolation Level
 
-
-
     {:ok, results} =
-    Muttkraft.Repo.transaction(fn ->
-      Muttkraft.Repo.query!("set transaction isolation level serializable")
-
-      resources = Muttkraft.Repo.preload(village, :resource_pile).resource_pile
-
-      errors = []
-
-      queued_units_count = Muttkraft.Repo.aggregate(Muttkraft.Army.get_queued_units_in_village(village_id), :count, :id)
-
-      errors = if queued_units_count > 7 do
-        ["To many units in queue" | errors]
-      else
-        errors
-      end
-
-      created_units_count = Muttkraft.Repo.aggregate(Muttkraft.Army.get_units_in_village(village_id), :count, :id)
-
-      errors =  if created_units_count > 20 do
-        errors = ["You cant have more units" | errors]
-      else
-        errors
-      end
-
-      resources = Muttkraft.Repo.preload(village, :resource_pile).resource_pile
-
-      costs = case type do
-                "goblin" -> %{gold: 50, wood: 100}
-                "orc" -> %{gold: 300, wood: 400}
-                "ogre" -> %{gold: 400, ore: 400}
-                "peasant" -> %{gold: 50, wood: 100}
-                "pikerman" -> %{gold: 150, wood: 200}
-                "halfling" -> %{wood: 50, ore: 100}
-                "boar" -> %{wood: 300, ore: 300}
-                "hydra" -> %{gold: 1000, blood: 300}
-              end
-
-      resource_pile_computation =
-        Enum.reduce(costs, %{pile: resources, changeset: %{}, errors: errors}, fn ({resource_name, resource_cost}, store) ->
-          current = store.pile[resource_name]
-          new = current - resource_cost
-
-          new_errors = cond do
-            new < 0 -> ["Not enought #{resource_name}" | store[:errors]]
-            new > 1000 -> ["To much resources?" | store[:errors]]
-            true -> store[:errors]
-          end
-
-          new_changeset = Map.put(store[:changeset], resource_name, new)
-
-          store
-          |> Map.put(:changeset, new_changeset)
-          |> Map.put(:errors, new_errors)
-        end)
-      
-
-      if length(resource_pile_computation.errors) > 0 do
-        {:error, resource_pile_computation.errors}
-      else
-        {:ok, _pile } = Muttkraft.Resources.update_pile(resources, resource_pile_computation[:changeset])
-        {:ok, created_unit}  = Army.create_unit_in_queue(%{type: type, village_id: village_id})
-        {:ok}
-      end
-    end)
+      Muttkraft.Repo.transaction(fn ->
+        Muttkraft.Repo.query!("set transaction isolation level serializable")
+        resource_pile = Muttkraft.Repo.preload(village, :resource_pile).resource_pile
+        case Muttkraft.QueueCalculator.can_buy?(village, resource_pile, type) do
+          {:ok, changeset} ->
+            {:ok, _pile } = Muttkraft.Resources.update_pile(resource_pile, changeset)
+            {:ok, _created_unit}  = Army.create_unit_in_queue(%{type: type, village_id: village_id})
+            {:ok}
+          {:error, errors} ->
+            {:error, errors}
+        end
+      end)
 
     case results do
       {:ok} ->

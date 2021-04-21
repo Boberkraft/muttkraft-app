@@ -94,11 +94,14 @@
                 <img src="<%= Routes.static_path(@conn, "/images/units/#{name}.png") %>"/>
             </div>
 
-            <%= link to: Routes.village_building_create_in_queue_path(@conn, :create_in_queue, @village.id, @building.id, name), method: :create_in_queue, class: "button #{if name == "hydra.png" || name == "boar.png", do: "disabled"}" do %>
-                +1
+            <%= if match?({:ok, _ }, Muttkraft.QueueCalculator.can_buy?(@village, @resource_pile, name)) do %>
+                <%= link to: Routes.village_building_create_in_queue_path(@conn, :create_in_queue, @village.id, @building.id, name), method: :create_in_queue, class: "button #{if name == "hydra.png" || name == "boar.png", do: "disabled"}" do %>
+                    +1
+                <% end %>
+            <% else %>
+                <button class="button" disabled> +1</button>
             <% end %>
-            
-       </div>
+        </div>
     <% end %>
 </div>
 
