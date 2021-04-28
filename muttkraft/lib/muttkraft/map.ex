@@ -57,6 +57,8 @@ defmodule Muttkraft.Map do
   def create_village(attrs \\ %{}) do
     empty_pile = Resources.create_empty_pile()
 
+    now = Time.utc_now()
+    # TODO: add default values?
     %Village{}
     |> Village.changeset(attrs)
     |> Repo.insert()
