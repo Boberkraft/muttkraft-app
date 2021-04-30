@@ -31,6 +31,7 @@ defmodule MuttkraftWeb.BuildingController do
   def show(conn, %{"village_id" => village_id, "id" => id}) do
     village = Muttkraft.Map.get_village!(village_id)
     building = Structures.get_building!(id)
+    Muttkraft.QueueCalculator.recalculate_queued(village)
     render(conn, "show.html", village: village, building: building)
   end
 

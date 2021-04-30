@@ -63,6 +63,7 @@ defmodule Muttkraft.Map do
     |> Village.changeset(attrs)
     |> Repo.insert()
     |> Map.put(:resource_pile_id, empty_pile.id)
+    |> Map.put(:army_last_checked_at, now)
   end
 
   @doc """

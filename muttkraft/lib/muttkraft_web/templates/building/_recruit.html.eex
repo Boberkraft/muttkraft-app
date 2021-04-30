@@ -116,10 +116,15 @@
 
             <div class="bottom-unit-preview <%= if i == 0, do: "first" %>">
                 <%= if i == 0 do %>
-                    <div x-init="() => { console.log(222); }">
-                    </div>
-                    <div class="outer-progress" x-init.debounce="console.log(10);">
-                        <div class="inner-progress" style="width: 76%"></div>
+                    <div
+                        class="outer-progress"
+                        data-controller="recruit-queue"
+                        data-recruit-queue-max-value="<%= Muttkraft.QueueCalculator.unit_to_queue_time(unit.type) %>"
+                        data-recruit-queue-current-value="<%= unit.queue_time %>"
+                        >
+                        <div class="inner-progress" style="width: <%= unit.queue_time / Muttkraft.QueueCalculator.unit_to_queue_time(unit.type) * 100 %>%" %"
+                             data-recruit-queue-target="innerProgressBar"
+                        ></div>
                     </div>
                 <% else %>
                     <div></div>
@@ -137,11 +142,14 @@
 
 <h2>Your current units</h2>
 <div>
-
     <%= for _ <- 1..5 do %>
         <img src="<%= Routes.static_path(@conn, "/images/units/goblin_mini.png") %>"/>
     <% end %>
     <img src="<%= Routes.static_path(@conn, "/images/units/orc_mini.png") %>"/>
-
 </div>
 
+
+<div data-controller="page">
+    <input data-target="page.myInput" type="text">
+    <button data-action="click->page#alertText">Click Here</button>
+</div>
